@@ -1,5 +1,5 @@
 ## API Used
-https://course-api.designedbymarvin.com/UCDAPIDemo/docs/seats
+https://course-api.designedbymarvin.com/UCDAPIDemo/home
 
 ## Available Scripts
 In the project directory, you can run:
