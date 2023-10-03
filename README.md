@@ -1,3 +1,6 @@
+## API Used
+https://course-api.designedbymarvin.com/UCDAPIDemo/docs/seats
+
 ## Available Scripts
 In the project directory, you can run:
 ### `npm start`
