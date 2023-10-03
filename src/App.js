@@ -5,20 +5,37 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-// function converts API datetime into more readable format
-function formatDate(dateTimeString) {
-  const options = {
-    month: '2-digit',
-    day: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-  };
+function formatDateFromEpoch(epochTime) {
+  // Create a new Date object with the provided epoch time in milliseconds
+  const date = new Date(epochTime * 1);
+  
+  // Define an array of month names
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-  const date = new Date(dateTimeString);
-  return date.toLocaleTimeString('en-US', options);
+  // Extract the date components
+  const month = monthNames[date.getMonth()];
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  let hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  let amOrPm = 'AM';
+
+  // Convert hours to 12-hour format and determine AM or PM
+  if (hours >= 12) {
+    amOrPm = 'PM';
+    if (hours > 12) {
+      hours -= 12;
+    }
+  }
+
+  // Ensure that hours are displayed as two digits with trailing zeros if necessary
+  hours = String(hours).padStart(2, '0');
+
+  // Construct the readable date string in the "YYYY-MM-DD hh:mm:ss AM/PM" format
+  const formattedDate = `${month} ${day}, ${year} at ${hours}:${minutes}:${seconds} ${amOrPm}`;
+
+  return formattedDate;
 }
 
 const BarChart = () => {
@@ -141,7 +158,7 @@ const BarChart = () => {
               onChange={handleSliderChange}
             />
           </div>
-          <p className="updatedAt">Updated at {formatDate(data.history[sliderValue]?.updatedAt)}</p>
+          <p className="updatedAt">Displaying seats on {formatDateFromEpoch(data.history[sliderValue]?.timestamp_local)}</p>
         </div>
       ) : (
         <p>Loading data...</p>  // message that is displayed when API response is loading/failing to load
