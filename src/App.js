@@ -44,6 +44,8 @@ const BarChart = () => {
   const [maxValue, setMaxValue] = useState(0);  // State for highest possible value of the three bars
   const [inputCRN, setInputCRN] = useState(''); // State for input value
   const [noResults, setNoResults] = useState(false); // State for no results message
+  const [checked, setChecked] = useState(true);
+
 
   // Extract the trailing part of the URL (e.g., /12345 from ucd-course-bars.pages.dev/12345)
   const trailingUrl = window.location.pathname.replace('/', '');
@@ -55,9 +57,15 @@ const BarChart = () => {
   }
   else {
     // construct the API endpoint using the trailing CRN at the end of the URL
-    apiEndpoint = `https://course-api.designedbymarvin.com/v1/seats/history/${trailingUrl}?optimized=1`;
+    if (checked) {
+      apiEndpoint = `https://course-api.designedbymarvin.com/v1/seats/history/${trailingUrl}?optimized=1`;
+    }
+    else {
+      apiEndpoint = `https://course-api.designedbymarvin.com/v1/seats/history/${trailingUrl}`;
+    }
   }
 
+  console.log(apiEndpoint);
   
   // Fetch JSON data from an API
   useEffect(() => {
@@ -65,6 +73,7 @@ const BarChart = () => {
       .then((response) => response.json())
       .then((jsonData) => {
         setData(jsonData);
+        console.log(jsonData);
         if (jsonData.warning === "no_results") {
           setNoResults(true);
         }
@@ -95,6 +104,10 @@ const BarChart = () => {
       // navigate to the new URL with the CRN
       window.location.href = `/${inputCRN}`;
     }
+  };
+
+  const handleCheckboxChange = (event) => {
+    setChecked(!checked);
   };
 
   // page appearance, extremely ugly organization, very hard to read
@@ -158,12 +171,14 @@ const BarChart = () => {
               onChange={handleSliderChange}
             />
           </div>
-          <p className="updatedAt">Displaying seats on {formatDateFromEpoch(data.history[sliderValue]?.timestamp_local)}</p>
+          <p className="updatedAt">Displaying seats on {formatDateFromEpoch(data.history[sliderValue]?.timestamp)}</p>
+          <div className="checkbox-container">
+            <p>Use optimized? <input value = "checked" defaultChecked = {"checked"} type = "checkbox" onChange = {handleCheckboxChange} /> </p> 
+          </div>
         </div>
       ) : (
         <p>Loading data...</p>  // message that is displayed when API response is loading/failing to load
       )}
-
     </div>
     
   );

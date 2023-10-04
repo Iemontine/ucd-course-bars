@@ -112,3 +112,15 @@ input[type="range"] {
   max-width: 90%;
   margin: 0 auto;
 }
+
+/* Position checkbox */
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top:-20px;
+  font-style: italic;
+  font-weight: normal;
+  max-width:90%;
+}
