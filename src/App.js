@@ -1,5 +1,5 @@
 // App.js
-// Written by darroll saddi at uc davis
+// Written by darroll s. at uc davis
 // Utilizes UC Davis API by Marvin
 
 import React, { useState, useEffect } from 'react';
@@ -114,7 +114,7 @@ const BarChart = () => {
   return (
     <div className="container">
       <h1 className="title">UCD CRN Tracker</h1>
-      <p className="subtitle">by darroll saddi <br></br> using the <a href="https://course-api.designedbymarvin.com/UCDAPIDemo/home" className="blue-link">UC Davis API</a></p>
+      <p className="subtitle">by darroll s. <br></br> using the <a href="https://course-api.designedbymarvin.com/UCDAPIDemo/home" className="blue-link">UC Davis API</a></p>
       <div className="input-container">
         <input
           type="text"
