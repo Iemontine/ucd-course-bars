@@ -87,7 +87,7 @@ input[type="range"] {
 .legend {
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  margin: 0 auto;
   max-width:100%;
 }
 
@@ -119,7 +119,8 @@ input[type="range"] {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top:-20px;
+  margin: 0 auto;
+  margin-top: -17.5px;
   font-style: italic;
   font-weight: normal;
   max-width:90%;

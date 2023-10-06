@@ -1,27 +1,27 @@
 // App.js
 // Written by darroll saddi at uc davis
-// Utilizes UC Davis API by Marvin
+// Utilizes UC Davis API by Marvin @ https://course-api.designedbymarvin.com/UCDAPIDemo/home
 
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function formatDateFromEpoch(epochTime) {
-  // Create a new Date object with the provided epoch time in milliseconds
+  // create a new Date object with the provided epoch time in milliseconds
   const date = new Date(epochTime * 1);
   
-  // Define an array of month names
+  // define an array of month names
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-  // Extract the date components
+  // extract the date components
   const month = monthNames[date.getMonth()];
   const day = String(date.getDate()).padStart(2, '0');
   const year = date.getFullYear();
-  let hours = date.getHours();
+  let hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
   let amOrPm = 'AM';
 
-  // Convert hours to 12-hour format and determine AM or PM
+  // convert hours to 12-hour format and determine AM or PM
   if (hours >= 12) {
     amOrPm = 'PM';
     if (hours > 12) {
@@ -29,25 +29,22 @@ function formatDateFromEpoch(epochTime) {
     }
   }
 
-  // Ensure that hours are displayed as two digits with trailing zeros if necessary
-  hours = String(hours).padStart(2, '0');
-
-  // Construct the readable date string in the "YYYY-MM-DD hh:mm:ss AM/PM" format
+  // construct the readable date string as "Mon DD, YYYY at hh:mm:ss AM/PM"
   const formattedDate = `${month} ${day}, ${year} at ${hours}:${minutes}:${seconds} ${amOrPm}`;
 
   return formattedDate;
 }
 
 const BarChart = () => {
-  const [data, setData] = useState(null);             // State for API response data
-  const [sliderValue, setSliderValue] = useState(0);  // Slider state
-  const [maxValue, setMaxValue] = useState(0);  // State for highest possible value of the three bars
-  const [inputCRN, setInputCRN] = useState(''); // State for input value
-  const [noResults, setNoResults] = useState(false); // State for no results message
+  const [data, setData] = useState(null);             // state for API response data
+  const [sliderValue, setSliderValue] = useState(0);  // slider state
+  const [maxValue, setMaxValue] = useState(0);        // state for highest possible value of the three bars
+  const [inputCRN, setInputCRN] = useState('');       // state for input value
+  const [noResults, setNoResults] = useState(false);  // state for no results message
   const [checked, setChecked] = useState(true);
 
 
-  // Extract the trailing part of the URL (e.g., /12345 from ucd-course-bars.pages.dev/12345)
+  // extract the trailing part of the URL (e.g., /12345 from ucd-course-bars.pages.dev/12345)
   const trailingUrl = window.location.pathname.replace('/', '');
 
   var apiEndpoint;
@@ -65,15 +62,12 @@ const BarChart = () => {
     }
   }
 
-  console.log(apiEndpoint);
-  
   // Fetch JSON data from an API
   useEffect(() => {
     fetch(apiEndpoint)
       .then((response) => response.json())
       .then((jsonData) => {
         setData(jsonData);
-        console.log(jsonData);
         if (jsonData.warning === "no_results") {
           setNoResults(true);
         }
@@ -105,10 +99,22 @@ const BarChart = () => {
       window.location.href = `/${inputCRN}`;
     }
   };
+  // listen for 'enter' keypress and trigger handleCRNInput
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleCRNInput();
+    }
+  };
 
   const handleCheckboxChange = (event) => {
     setChecked(!checked);
   };
+
+  useEffect(() => {
+    if (data) {
+      setSliderValue(data.history.length - 1);
+    }
+  }, [data]);
 
   // page appearance, extremely ugly organization, very hard to read
   return (
@@ -121,6 +127,7 @@ const BarChart = () => {
           placeholder="Enter a valid CRN"
           value={inputCRN}
           onChange={(e) => setInputCRN(e.target.value)}
+          onKeyPress={handleKeyPress} // listen for 'enter' keypress
         />
         <button onClick={handleCRNInput}>Enter</button>
       </div>
@@ -173,7 +180,14 @@ const BarChart = () => {
           </div>
           <p className="updatedAt">Displaying seats on {formatDateFromEpoch(data.history[sliderValue]?.timestamp)}</p>
           <div className="checkbox-container">
-            <p>Use optimized? <input value = "checked" defaultChecked = {"checked"} type = "checkbox" onChange = {handleCheckboxChange} /> </p> 
+            <p>Use optimized? (Experimental)
+              <input 
+                value = "checked" 
+                defaultChecked = {"checked"} 
+                type = "checkbox" 
+                onChange = {handleCheckboxChange} 
+              /> 
+            </p> 
           </div>
         </div>
       ) : (
