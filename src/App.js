@@ -48,19 +48,13 @@ const BarChart = () => {
   const trailingUrl = window.location.pathname.replace('/', '');
 
   var apiEndpoint;
-  if (trailingUrl === '') {
-    // this is extremely ugly i'll fix it one day
-    apiEndpoint = `https://course-api.designedbymarvin.com/v1/seats/history/1`;
-  }
-  else {
-    // construct the API endpoint using the trailing CRN at the end of the URL
-    if (checked) {
-      apiEndpoint = `https://course-api.designedbymarvin.com/v1/seats/history/${trailingUrl}?optimized=1`;
-    }
-    else {
-      apiEndpoint = `https://course-api.designedbymarvin.com/v1/seats/history/${trailingUrl}`;
-    }
-  }
+// Construct the API endpoint using the trailing CRN and the checkbox state
+if (trailingUrl === '') {
+  apiEndpoint = `https://course-api.designedbymarvin.com/v1/seats/history/1`;
+} else {
+  apiEndpoint = `https://course-api.designedbymarvin.com/v1/seats/history/${trailingUrl}?optimized=${checked ? 0 : 1}`;
+}
+
 
   // Fetch JSON data from an API
   useEffect(() => {
@@ -183,7 +177,7 @@ const BarChart = () => {
             <p>Use optimized? (Experimental)
               <input 
                 value = "checked" 
-                defaultChecked = {"checked"} 
+                defaultChecked = {!checked}
                 type = "checkbox" 
                 onChange = {handleCheckboxChange} 
               /> 
